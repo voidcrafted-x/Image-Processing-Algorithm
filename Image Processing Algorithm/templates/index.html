@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Digital Image Processing
+    </title>
+
+
+    <style>
+
+        /* =====================================
+           GLOBAL
+        ===================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Inter,
+                Arial,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f5f7fa,
+                    #e9eef5
+                );
+
+            color: #111;
+
+            min-height: 100vh;
+
+        }
+
+
+        /* =====================================
+           MAIN CONTAINER
+        ===================================== */
+
+        .container {
+
+            width: 92%;
+
+            max-width: 1450px;
+
+            margin: auto;
+
+            padding:
+                35px 0 60px;
+
+        }
+
+
+        /* =====================================
+           HEADER
+        ===================================== */
+
+        .header {
+
+            text-align: center;
+
+            margin-bottom: 35px;
+
+        }
+
+
+        .header h1 {
+
+            margin: 0;
+
+            font-size: 36px;
+
+            font-weight: 700;
+
+        }
+
+
+        .header p {
+
+            margin-top: 10px;
+
+            color: #666;
+
+            font-size: 16px;
+
+        }
+
+
+        /* =====================================
+           UPLOAD CARD
+        ===================================== */
+
+        .upload-card {
+
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 10px 30px
+                rgba(0, 0, 0, 0.08);
+
+        }
+
+
+        /* =====================================
+           DROP AREA
+        ===================================== */
+
+        .drop-area {
+
+            border:
+                2px dashed #a8b0bb;
+
+            border-radius: 16px;
+
+            padding:
+                55px 20px;
+
+            text-align: center;
+
+            background: #fafbfc;
+
+            transition:
+                border 0.2s,
+                background 0.2s,
+                transform 0.2s;
+
+            cursor: pointer;
+
+        }
+
+
+        .drop-area:hover {
+
+            border-color: #333;
+
+            background: #f5f5f5;
+
+        }
+
+
+        .drop-area.dragover {
+
+            border-color: #111;
+
+            background: #eeeeee;
+
+            transform: scale(1.01);
+
+        }
+
+
+        .upload-icon {
+
+            font-size: 48px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .drop-title {
+
+            font-size: 21px;
+
+            font-weight: 600;
+
+            margin: 5px;
+
+        }
+
+
+        .drop-subtitle {
+
+            color: #777;
+
+            margin: 10px;
+
+        }
+
+
+        /* =====================================
+           FILE BUTTON
+        ===================================== */
+
+        .browse {
+
+            display: inline-block;
+
+            margin-top: 12px;
+
+            padding:
+                12px 22px;
+
+            background: #111;
+
+            color: white;
+
+            border-radius: 9px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+        }
+
+
+        .browse:hover {
+
+            background: #333;
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        input[type="file"] {
+
+            display: none;
+
+        }
+
+
+        #fileName {
+
+            margin-top: 18px;
+
+            font-weight: 600;
+
+            color: #333;
+
+        }
+
+
+        /* =====================================
+           PROCESS BUTTON
+        ===================================== */
+
+        .process-button {
+
+            display: block;
+
+            margin:
+                25px auto 0;
+
+            padding:
+                14px 38px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #111;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+        }
+
+
+        .process-button:hover {
+
+            background: #333;
+
+            transform:
+                translateY(-2px);
+
+        }
+
+
+        .process-button:active {
+
+            transform:
+                translateY(0);
+
+        }
+
+
+        .process-button:disabled {
+
+            opacity: 0.7;
+
+            cursor: wait;
+
+        }
+
+
+        /* =====================================
+           RESULTS
+        ===================================== */
+
+        .results {
+
+            margin-top: 50px;
+
+        }
+
+
+        .results-header {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .results-header h2 {
+
+            margin: 0;
+
+            font-size: 28px;
+
+        }
+
+
+        .dimensions {
+
+            margin-top: 8px;
+
+            color: #777;
+
+        }
+
+
+        /* =====================================
+           IMAGE GRID
+        ===================================== */
+
+        .image-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 28px;
+
+        }
+
+
+        /* =====================================
+           IMAGE CARD
+        ===================================== */
+
+        .image-card {
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 18px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.08);
+
+            transition:
+                transform 0.2s,
+                box-shadow 0.2s;
+
+        }
+
+
+        .image-card:hover {
+
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(0, 0, 0, 0.12);
+
+        }
+
+
+        .image-card h3 {
+
+            margin:
+                4px 0 15px;
+
+            font-size: 19px;
+
+        }
+
+
+        /* =====================================
+           IMAGE WRAPPER
+        ===================================== */
+
+        .image-wrapper {
+
+            width: 100%;
+
+            height: 480px;
+
+            background: #f0f1f3;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            overflow: hidden;
+
+        }
+
+
+        /* =====================================
+           RESULT IMAGE
+        ===================================== */
+
+        .image-wrapper img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: contain;
+
+            cursor: zoom-in;
+
+            transition:
+                transform 0.2s;
+
+        }
+
+
+        .image-wrapper img:hover {
+
+            transform:
+                scale(1.02);
+
+        }
+
+
+        /* =====================================
+           ERROR
+        ===================================== */
+
+        .error {
+
+            margin-top: 20px;
+
+            padding: 12px;
+
+            background: #ffe5e5;
+
+            color: #c00;
+
+            border-radius: 8px;
+
+            text-align: center;
+
+            font-weight: 600;
+
+        }
+
+
+        /* =====================================
+           FULLSCREEN IMAGE VIEWER
+        ===================================== */
+
+        .image-modal {
+
+            display: none;
+
+            position: fixed;
+
+            z-index: 9999;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            background:
+                rgba(0, 0, 0, 0.92);
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 30px;
+
+        }
+
+
+        /* Full size image */
+
+        .image-modal img {
+
+            max-width: 95vw;
+
+            max-height: 95vh;
+
+            width: auto;
+
+            height: auto;
+
+            object-fit: contain;
+
+            border-radius: 8px;
+
+            cursor: zoom-out;
+
+            box-shadow:
+                0 10px 50px
+                rgba(0, 0, 0, 0.5);
+
+        }
+
+
+        /* =====================================
+           CLOSE BUTTON
+        ===================================== */
+
+        .close-modal {
+
+            position: absolute;
+
+            top: 20px;
+
+            right: 30px;
+
+            font-size: 45px;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            line-height: 1;
+
+            z-index: 10000;
+
+        }
+
+
+        .close-modal:hover {
+
+            opacity: 0.7;
+
+        }
+
+
+        /* =====================================
+           MODAL TITLE
+        ===================================== */
+
+        .modal-title {
+
+            position: absolute;
+
+            top: 25px;
+
+            left: 30px;
+
+            color: white;
+
+            font-size: 18px;
+
+            font-weight: 600;
+
+        }
+
+
+        /* =====================================
+           RESPONSIVE
+        ===================================== */
+
+        @media (max-width: 900px) {
+
+            .image-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .image-wrapper {
+
+                height: 400px;
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .container {
+
+                width: 94%;
+
+                padding-top: 20px;
+
+            }
+
+
+            .header h1 {
+
+                font-size: 28px;
+
+            }
+
+
+            .upload-card {
+
+                padding: 20px;
+
+            }
+
+
+            .drop-area {
+
+                padding:
+                    40px 15px;
+
+            }
+
+
+            .image-wrapper {
+
+                height: 320px;
+
+            }
+
+
+            .image-modal {
+
+                padding: 10px;
+
+            }
+
+
+            .image-modal img {
+
+                max-width: 98vw;
+
+                max-height: 90vh;
+
+            }
+
+
+            .close-modal {
+
+                top: 12px;
+
+                right: 18px;
+
+                font-size: 38px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ==================================
+         HEADER
+    =================================== -->
+
+    <div class="header">
+
+        <h1>
+            🖼️ Digital Image Processing
+        </h1>
+
+        <p>
+            Upload an image and analyze its
+            RGB channels and grayscale representation.
+        </p>
+
+    </div>
+
+
+    <!-- ==================================
+         UPLOAD CARD
+    =================================== -->
+
+    <div class="upload-card">
+
+
+        <form
+            action="/process"
+            method="POST"
+            enctype="multipart/form-data"
+            id="uploadForm"
+        >
+
+
+            <!-- DROP AREA -->
+
+            <div
+                class="drop-area"
+                id="dropArea"
+            >
+
+
+                <div class="upload-icon">
+
+                    📂
+
+                </div>
+
+
+                <div class="drop-title">
+
+                    Drag & Drop your image here
+
+                </div>
+
+
+                <div class="drop-subtitle">
+
+                    or select an image
+                    from your computer
+
+                </div>
+
+
+                <label class="browse">
+
+                    Select Image
+
+                    <input
+                        type="file"
+                        name="image"
+                        id="fileInput"
+                        accept="image/*"
+                        required
+                    >
+
+                </label>
+
+
+                <div id="fileName"></div>
+
+
+            </div>
+
+
+            <!-- PROCESS BUTTON -->
+
+            <button
+                type="submit"
+                class="process-button"
+                id="processButton"
+            >
+
+                ⚡ Process Image
+
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+
+    <!-- ==================================
+         ERROR
+    =================================== -->
+
+    {% if error %}
+
+        <div class="error">
+
+            {{ error }}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- ==================================
+         RESULTS
+    =================================== -->
+
+    {% if results %}
+
+    <div class="results">
+
+
+        <div class="results-header">
+
+            <h2>
+
+                Processing Results
+
+            </h2>
+
+
+            <div class="dimensions">
+
+                Image Size:
+
+                {{ results.width }}
+
+                ×
+
+                {{ results.height }}
+
+                pixels
+
+            </div>
+
+        </div>
+
+
+        <!-- IMAGE GRID -->
+
+        <div class="image-grid">
+
+
+            <!-- ==================================
+                 ORIGINAL
+            =================================== -->
+
+            <div class="image-card">
+
+                <h3>
+
+                    Original
+
+                </h3>
+
+
+                <div class="image-wrapper">
+
+                    <img
+                        src="{{ url_for(
+                            'serve_image',
+                            filename=results.original
+                        ) }}"
+                        alt="Original Image"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================
+                 GRAYSCALE
+            =================================== -->
+
+            <div class="image-card">
+
+                <h3>
+
+                    Grayscale
+
+                </h3>
+
+
+                <div class="image-wrapper">
+
+                    <img
+                        src="{{ url_for(
+                            'serve_image',
+                            filename=results.gray
+                        ) }}"
+                        alt="Grayscale Image"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================
+                 RED
+            =================================== -->
+
+            <div class="image-card">
+
+                <h3>
+
+                    🔴 Red Channel
+
+                </h3>
+
+
+                <div class="image-wrapper">
+
+                    <img
+                        src="{{ url_for(
+                            'serve_image',
+                            filename=results.red
+                        ) }}"
+                        alt="Red Channel"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================
+                 GREEN
+            =================================== -->
+
+            <div class="image-card">
+
+                <h3>
+
+                    🟢 Green Channel
+
+                </h3>
+
+
+                <div class="image-wrapper">
+
+                    <img
+                        src="{{ url_for(
+                            'serve_image',
+                            filename=results.green
+                        ) }}"
+                        alt="Green Channel"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================
+                 BLUE
+            =================================== -->
+
+            <div class="image-card">
+
+                <h3>
+
+                    🔵 Blue Channel
+
+                </h3>
+
+
+                <div class="image-wrapper">
+
+                    <img
+                        src="{{ url_for(
+                            'serve_image',
+                            filename=results.blue
+                        ) }}"
+                        alt="Blue Channel"
+                    >
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- ==========================================
+     FULLSCREEN IMAGE MODAL
+=========================================== -->
+
+<div
+    class="image-modal"
+    id="imageModal"
+>
+
+
+    <!-- Modal Title -->
+
+    <div
+        class="modal-title"
+        id="modalTitle"
+    >
+
+        Image Preview
+
+    </div>
+
+
+    <!-- Close Button -->
+
+    <span
+        class="close-modal"
+        id="closeModal"
+    >
+
+        &times;
+
+    </span>
+
+
+    <!-- Full Image -->
+
+    <img
+        id="fullImage"
+        src=""
+        alt="Full Size Image"
+    >
+
+
+</div>
+
+
+<script>
+
+
+    /* =====================================
+       ELEMENTS
+    ===================================== */
+
+    const dropArea =
+        document.getElementById(
+            "dropArea"
+        );
+
+
+    const fileInput =
+        document.getElementById(
+            "fileInput"
+        );
+
+
+    const fileName =
+        document.getElementById(
+            "fileName"
+        );
+
+
+    const uploadForm =
+        document.getElementById(
+            "uploadForm"
+        );
+
+
+    const processButton =
+        document.getElementById(
+            "processButton"
+        );
+
+
+    /* =====================================
+       FILE SELECTION
+    ===================================== */
+
+    fileInput.addEventListener(
+        "change",
+        function () {
+
+            if (this.files.length > 0) {
+
+                fileName.textContent =
+                    "✓ " +
+                    this.files[0].name;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================
+       DRAG & DROP
+    ===================================== */
+
+    [
+        "dragenter",
+        "dragover",
+        "dragleave",
+        "drop"
+    ].forEach(
+        function (eventName) {
+
+            dropArea.addEventListener(
+                eventName,
+                function (event) {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================
+       DRAG OVER
+    ===================================== */
+
+    [
+        "dragenter",
+        "dragover"
+    ].forEach(
+        function (eventName) {
+
+            dropArea.addEventListener(
+                eventName,
+                function () {
+
+                    dropArea.classList.add(
+                        "dragover"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================
+       DRAG LEAVE
+    ===================================== */
+
+    [
+        "dragleave",
+        "drop"
+    ].forEach(
+        function (eventName) {
+
+            dropArea.addEventListener(
+                eventName,
+                function () {
+
+                    dropArea.classList.remove(
+                        "dragover"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================
+       DROP IMAGE
+    ===================================== */
+
+    dropArea.addEventListener(
+        "drop",
+        function (event) {
+
+            const files =
+                event.dataTransfer.files;
+
+
+            if (files.length > 0) {
+
+                fileInput.files =
+                    files;
+
+
+                fileName.textContent =
+                    "✓ " +
+                    files[0].name;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================
+       PROCESSING INDICATOR
+    ===================================== */
+
+    uploadForm.addEventListener(
+        "submit",
+        function () {
+
+            processButton.textContent =
+                "⏳ Processing...";
+
+
+            processButton.disabled =
+                true;
+
+        }
+    );
+
+
+    /* =====================================
+       FULLSCREEN IMAGE VIEWER
+    ===================================== */
+
+    const imageModal =
+        document.getElementById(
+            "imageModal"
+        );
+
+
+    const fullImage =
+        document.getElementById(
+            "fullImage"
+        );
+
+
+    const closeModal =
+        document.getElementById(
+            "closeModal"
+        );
+
+
+    const modalTitle =
+        document.getElementById(
+            "modalTitle"
+        );
+
+
+    /* =====================================
+       GET ALL RESULT IMAGES
+    ===================================== */
+
+    const resultImages =
+        document.querySelectorAll(
+            ".image-wrapper img"
+        );
+
+
+    /* =====================================
+       OPEN FULLSCREEN
+    ===================================== */
+
+    resultImages.forEach(
+        function (image) {
+
+            image.addEventListener(
+                "click",
+                function () {
+
+                    /* Set image */
+
+                    fullImage.src =
+                        this.src;
+
+
+                    /* Set title */
+
+                    modalTitle.textContent =
+                        this
+                        .closest(
+                            ".image-card"
+                        )
+                        .querySelector(
+                            "h3"
+                        )
+                        .textContent;
+
+
+                    /* Show modal */
+
+                    imageModal.style.display =
+                        "flex";
+
+
+                    /* Prevent page scrolling */
+
+                    document.body.style.overflow =
+                        "hidden";
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================
+       CLOSE MODAL FUNCTION
+    ===================================== */
+
+    function closeImageModal() {
+
+        imageModal.style.display =
+            "none";
+
+
+        fullImage.src =
+            "";
+
+
+        document.body.style.overflow =
+            "";
+
+    }
+
+
+    /* =====================================
+       CLOSE BUTTON
+    ===================================== */
+
+    closeModal.addEventListener(
+        "click",
+        closeImageModal
+    );
+
+
+    /* =====================================
+       CLICK OUTSIDE IMAGE
+    ===================================== */
+
+    imageModal.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target === imageModal
+            ) {
+
+                closeImageModal();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================
+       ESC KEY
+    ===================================== */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Escape" &&
+                imageModal.style.display ===
+                    "flex"
+            ) {
+
+                closeImageModal();
+
+            }
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>
