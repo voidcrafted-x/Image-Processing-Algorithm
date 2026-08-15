@@ -33,17 +33,17 @@ The application accepts an image through the file manager or by dragging it into
 
 The uploaded image is processed into:
 
-| Original                                                         | Grayscale                                                          |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------ |
-| ![Original](Image%20Processing%20Algorithm/results/original.jpg) | ![Grayscale](Image%20Processing%20Algorithm/results/grayscale.jpg) |
+### Original
 
-| Red Channel                                                            | Green Channel                                                              |
-| ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| ![Red Channel](Image%20Processing%20Algorithm/results/red_channel.jpg) | ![Green Channel](Image%20Processing%20Algorithm/results/green_channel.jpg) |
+![Original](Image%20Processing%20Algorithm/results/original.jpg)
 
-| Blue Channel                                                             |   |
-| ------------------------------------------------------------------------ | - |
-| ![Blue Channel](Image%20Processing%20Algorithm/results/blue_channel.jpg) |   |
+| Grayscale                                                          | Red Channel                                                            |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| ![Grayscale](Image%20Processing%20Algorithm/results/grayscale.jpg) | ![Red Channel](Image%20Processing%20Algorithm/results/red_channel.jpg) |
+
+| Green Channel                                                              | Blue Channel                                                             |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| ![Green Channel](Image%20Processing%20Algorithm/results/green_channel.jpg) | ![Blue Channel](Image%20Processing%20Algorithm/results/blue_channel.jpg) |
 
 > Click any result image in the web application to view it in fullscreen.
 
@@ -277,8 +277,11 @@ http://127.0.0.1:5000
 # 📌 Usage
 
 1. Open the web application.
+
 2. Select an image from your computer **or** drag and drop an image.
+
 3. Click **Process Image**.
+
 4. The application generates:
 
    * Original
@@ -286,6 +289,7 @@ http://127.0.0.1:5000
    * Red channel
    * Green channel
    * Blue channel
+
 5. Click any result to view it in fullscreen.
 
 ---
@@ -365,12 +369,3 @@ This project was developed to strengthen practical understanding of:
 # 👨‍💻 Author
 
 **Nimesh**
-
-Engineering Student
-Python • AI/ML • Software Development
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
