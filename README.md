@@ -5,6 +5,7 @@ Algorithms, and Application Development.
 
 📂 Project Structure
 
+```text
 .
 ├── Bit_plane_slicing/
 │   ├── Bit_plane_slicing.py
@@ -20,8 +21,9 @@ Algorithms, and Application Development.
 │   ├── README.md
 │   └── requirements.txt
 │
-├── Image Processing Algorithm/
-│   └── Image processing algorithm implementations
+├── Image_Processing_Algorithm/
+│   ├── Image_processing_algorithm_implementations/
+│   └── ...
 │
 ├── Tambola_ticket_generator/
 │   ├── Tambola_Ticket_Generator.py
